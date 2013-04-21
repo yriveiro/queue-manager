@@ -25,6 +25,15 @@ class ClassTest(unittest.TestCase):
         self.assertEqual(element, 'test')
         queue.task_done()
 
+    def test_clean(self):
+        client = qmanager.NRTQueueManager()
+        client.connect()
+        queue = client.NRTQueue()
+        queue.clear()
+        queue.put('test')
+        queue.clear()
+        self.assertEqual(queue.size(), 0)
+
 
 if __name__ == '__main__':
     unittest.main()
