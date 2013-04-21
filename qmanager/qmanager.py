@@ -3,13 +3,13 @@ import Queue
 from multiprocessing.managers import BaseManager, BaseProxy
 
 
-class QueueManager(BaseManager):
+class NRTQueueManager(BaseManager):
     def __init__(self, address=('localhost', 50000,), authkey=''):
-        super(QueueManager, self).__init__(address, authkey)
-        self.register('NRTQueue', callable=lambda: _queue, proxytype=QueueProxy,
+        super(NRTQueueManager, self).__init__(address, authkey)
+        self.register('NRTQueue', callable=lambda: _NRT_queue, proxytype=NRTQueueProxy,
                       exposed=('__len__','put','get', 'size', 'clear', 'task_done'))
 
-class QueueProxy(BaseProxy):
+class NRTQueueProxy(BaseProxy):
     def put(self, data):
         return self._callmethod('put', args=(data,))
 
@@ -29,7 +29,7 @@ class QueueProxy(BaseProxy):
         return self._callmethod('__len__')
 
 
-class Queue(Queue.Queue):
+class NRTQueue(Queue.Queue):
     def clear(self):
         with self.mutex:
             self.queue.clear()
@@ -37,11 +37,11 @@ class Queue(Queue.Queue):
     def __len__(self):
         return self.qsize()
 
-_queue = Queue()
+_NRT_queue = NRTQueue()
 
-class QueueServer(object):
+class NRTQueueServer(object):
     def run(self):
-        self.manager = QueueManager()
+        self.manager = NRTQueueManager()
         self.manager.get_server().serve_forever()
 
     def shutdown(self):
@@ -49,5 +49,5 @@ class QueueServer(object):
 
 
 if __name__ == '__main__':
-    server = QueueServer()
+    server = NRTQueueServer()
     server.run()

@@ -5,9 +5,9 @@ from qmanager import qmanager
 
 class ClassTest(unittest.TestCase):
     def test_put(self):
-        client = qmanager.QueueManager()
+        client = qmanager.NRTQueueManager()
         client.connect()
-        queue = client.Queue()
+        queue = client.NRTQueue()
         queue.clear()
         queue.put('test')
 
@@ -15,9 +15,9 @@ class ClassTest(unittest.TestCase):
         queue.task_done()
 
     def test_get(self):
-        client = qmanager.QueueManager()
+        client = qmanager.NRTQueueManager()
         client.connect()
-        queue = client.Queue()
+        queue = client.NRTQueue()
         queue.clear()
         queue.put('test')
         element = queue.get()
